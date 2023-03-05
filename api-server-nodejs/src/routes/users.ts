@@ -24,7 +24,7 @@ const userSchema = Joi.object().keys({
   password: Joi.string().required(),
 });
 
-router.post('/register', (req, res) => {
+router.post('/register', (req: any, res: any) => {
   // Joy Validation
   const result = userSchema.validate(req.body);
   if (result.error) {
@@ -43,8 +43,8 @@ router.post('/register', (req, res) => {
     if (user) {
       res.json({ success: false, msg: 'Email already exists' });
     } else {
-      bcrypt.genSalt(10, (_err, salt) => {
-        bcrypt.hash(password, salt).then((hash) => {
+      bcrypt.genSalt(10, (_err: any, salt: any) => {
+        bcrypt.hash(password, salt).then((hash: any) => {
           const query = {
             username,
             email,
@@ -60,7 +60,7 @@ router.post('/register', (req, res) => {
   });
 });
 
-router.post('/login', (req, res) => {
+router.post('/login', (req: any, res: any) => {
   // Joy Validation
   const result = userSchema.validate(req.body);
   if (result.error) {
@@ -85,7 +85,7 @@ router.post('/login', (req, res) => {
       return res.json({ success: false, msg: 'No password' });
     }
 
-    bcrypt.compare(password, user.password, (_err2, isMatch) => {
+    bcrypt.compare(password, user.password, (_err2: any, isMatch: any) => {
       if (isMatch) {
         if (!process.env.SECRET) {
           throw new Error('SECRET not provided');
@@ -115,7 +115,7 @@ router.post('/login', (req, res) => {
   });
 });
 
-router.post('/logout', checkToken, (req, res) => {
+router.post('/logout', checkToken, (req: any, res: any) => {
   const { token } = req.body;
   const activeSessionRepository = connection!.getRepository(ActiveSession);
 
@@ -126,11 +126,11 @@ router.post('/logout', checkToken, (req, res) => {
     });
 });
 
-router.post('/checkSession', checkToken, (_req, res) => {
+router.post('/checkSession', checkToken, (_req: any, res: any) => {
   res.json({ success: true });
 });
 
-router.post('/all', checkToken, (_req, res) => {
+router.post('/all', checkToken, (_req: any, res: any) => {
   const userRepository = connection!.getRepository(User);
 
   userRepository.find({}).then((users) => {
@@ -143,7 +143,7 @@ router.post('/all', checkToken, (_req, res) => {
   }).catch(() => res.json({ success: false }));
 });
 
-router.post('/edit', checkToken, (req, res) => {
+router.post('/edit', checkToken, (req: any, res: any) => {
   const { userID, username, email } = req.body;
 
   const userRepository = connection!.getRepository(User);
@@ -166,7 +166,7 @@ router.post('/edit', checkToken, (req, res) => {
 });
 
 // Used for tests (nothing functional)
-router.get('/testme', (_req, res) => {
+router.get('/testme', (_req: any, res: any) => {
   res.status(200).json({ success: true, msg: 'all good' });
 });
 
